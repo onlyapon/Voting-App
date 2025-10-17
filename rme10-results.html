@@ -137,9 +137,24 @@
                 return;
             }
 
+            // Debug: Show all votes in console
+            console.log('All votes found:', votes);
+            console.log('Number of votes:', votes.length);
+            
+            // Debug: Show stored keys in sessionStorage
+            console.log('All sessionStorage keys:');
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                console.log(key, sessionStorage.getItem(key));
+            }
+
             // Get unique candidates from all votes
             const candidates = new Set();
             votes.forEach(vote => {
+                if (!vote.executives) {
+                    console.error('Vote missing executives array:', vote);
+                    return;
+                }
                 vote.executives.forEach(candidate => candidates.add(candidate));
             });
 

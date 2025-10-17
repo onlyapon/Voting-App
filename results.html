@@ -58,6 +58,20 @@
     let candidates = [];
     let selectedPost = '';
 
+    // Mapping from post keys to human-readable names
+    const postNameMap = {
+      post1: "Cultural Secretary",
+      post2: "Sports Secretary",
+      post3: "Literary Secretary",
+      post4: "Technical Secretary",
+      post5: "Welfare Secretary",
+      post6: "Executive Member 1",
+      post7: "Executive Member 2",
+      post8: "Executive Member 3",
+      post9: "Executive Member 4",
+      post10: "Executive Member 5"
+    };
+
     // Auto-generate post selector from actual vote data
     function populatePostSelector() {
       const allVotes = loadAllVotes();
@@ -70,10 +84,10 @@
       postKeys.forEach(post => {
         const opt = document.createElement('option');
         opt.value = post;
-        opt.textContent = post;
+        opt.textContent = postNameMap[post] || post;
         postSelect.appendChild(opt);
       });
-      debugPosts.textContent = 'Detected post keys: ' + postKeys.join(', ');
+      debugPosts.textContent = 'Detected post keys: ' + postKeys.map(k => (postNameMap[k] || k) + ' [' + k + ']').join(', ');
     }
 
     function buildUIForPost(post) {
@@ -107,7 +121,7 @@
       const div = document.createElement('div');
       div.className = 'post';
       const title = document.createElement('h3');
-      title.textContent = post;
+      title.textContent = postNameMap[post] || post;
       div.appendChild(title);
       const bars = document.createElement('div');
       bars.className = 'bars';

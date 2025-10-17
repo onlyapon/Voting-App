@@ -199,16 +199,22 @@
 
         function updateBars() {
             const totalVotes = Object.values(tallies).reduce((sum, count) => sum + count, 0);
-            
             Object.entries(tallies).forEach(([candidate, count]) => {
-                const candidateDiv = resultsDiv.querySelector(`div.candidate:has(h3:contains("${candidate}"))`);
+                // Find candidate div by h3 text content
+                const divs = resultsDiv.querySelectorAll('.candidate');
+                let candidateDiv = null;
+                for (const div of divs) {
+                    const h3 = div.querySelector('h3');
+                    if (h3 && h3.textContent.trim() === candidate) {
+                        candidateDiv = div;
+                        break;
+                    }
+                }
                 if (!candidateDiv) return;
-                
                 const percent = totalVotes === 0 ? 0 : (count / totalVotes * 100);
                 const bar = candidateDiv.querySelector('.bar-fill');
                 const votesSpan = candidateDiv.querySelector('.votes');
                 const percentSpan = candidateDiv.querySelector('.percent');
-                
                 bar.style.width = `${percent}%`;
                 votesSpan.textContent = `${count} vote${count === 1 ? '' : 's'}`;
                 percentSpan.textContent = `${Math.round(percent)}%`;

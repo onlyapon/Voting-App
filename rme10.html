@@ -220,7 +220,9 @@
             };
 
             try {
-                sessionStorage.setItem('vote_for_Batch_RME_10', JSON.stringify(vote));
+                // Generate a unique key for this vote using timestamp
+                const voteKey = 'vote_for_Batch_RME_10_' + new Date().getTime();
+                sessionStorage.setItem(voteKey, JSON.stringify(vote));
                 message.textContent = 'Vote recorded successfully!';
                 message.className = 'message success';
                 submitButton.disabled = true;

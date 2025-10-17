@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RME 10 Election Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fafbfd;
+            margin: 0;
+            padding: 24px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        h1 { 
+            color: #007bff;
+            margin-bottom: 1.5rem;
+        }
+        .controls {
+            margin: 12px 0 18px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        button {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .candidate {
+            border: 1px solid #eef2f6;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+        .candidate h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+        }
+        .bar {
+            height: 18px;
+            background: #e9ecef;
+            border-radius: 9px;
+            width: 100%;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .bar-fill {
+            height: 100%;
+            background: #28a745;
+            width: 0%;
+            transition: width 0.45s ease;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9em;
+        }
+        .back-btn {
+            background: #6c757d;
+            margin-top: 20px;
+        }
+        .no-votes {
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+            text-align: center;
+            border: 1px dashed #ccc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>RME 10 Election Results</h1>
+        <div class="controls">
+            <button id="revealBtn">Reveal Next Vote</button>
+            <button id="resetBtn">Reset</button>
+        </div>
+        <div id="results" class="results">
+            <!-- Results will be populated here -->
+        </div>
+        <button class="back-btn" onclick="window.location.href='results.html'">Back to Main Results</button>
+    </div>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        const revealBtn = document.getElementById('revealBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        let revealIndex = 0;
+        let votes = [];
+        let tallies = {};
+
+        function loadVotes() {
+            const allVotes = {};
+            for (let i = 0; i < sessionStorage.length; i++) {
+                const key = sessionStorage.key(i);
+                if (key.startsWith('vote_for_Batch_RME_10')) {
+                    try {
+                        const vote = JSON.parse(sessionStorage.getItem(key));
+                        allVotes[key] = vote;
+                    } catch (e) {
+                        console.error('Error parsing vote:', e);
+                    }
+                }
+            }
+            return Object.values(allVotes).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+        }
+
+        function initializeResults() {
+            votes = loadVotes();
+            revealIndex = 0;
+            tallies = {};
+            
+            if (votes.length === 0) {
+                resultsDiv.innerHTML = '<div class="no-votes">No votes recorded yet for RME 10</div>';
+                revealBtn.disabled = true;
+                return;
+            }
+
+            // Get unique candidates from all votes
+            const candidates = new Set();
+            votes.forEach(vote => {
+                vote.executives.forEach(candidate => candidates.add(candidate));
+            });
+
+            // Initialize tallies and UI
+            resultsDiv.innerHTML = '';
+            candidates.forEach(candidate => {
+                tallies[candidate] = 0;
+                
+                const div = document.createElement('div');
+                div.className = 'candidate';
+                div.innerHTML = `
+                    <h3>${candidate}</h3>
+                    <div class="bar">
+                        <div class="bar-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="stats">
+                        <span class="votes">0 votes</span>
+                        <span class="percent">0%</span>
+                    </div>
+                `;
+                resultsDiv.appendChild(div);
+            });
+
+            revealBtn.disabled = false;
+        }
+
+        function revealNext() {
+            if (revealIndex >= votes.length) return;
+            
+            const vote = votes[revealIndex];
+            vote.executives.forEach(candidate => {
+                tallies[candidate]++;
+            });
+            revealIndex++;
+            
+            updateBars();
+            
+            if (revealIndex >= votes.length) {
+                revealBtn.disabled = true;
+            }
+        }
+
+        function updateBars() {
+            const totalVotes = Object.values(tallies).reduce((sum, count) => sum + count, 0);
+            
+            Object.entries(tallies).forEach(([candidate, count]) => {
+                const candidateDiv = resultsDiv.querySelector(`div.candidate:has(h3:contains("${candidate}"))`);
+                if (!candidateDiv) return;
+                
+                const percent = totalVotes === 0 ? 0 : (count / totalVotes * 100);
+                const bar = candidateDiv.querySelector('.bar-fill');
+                const votesSpan = candidateDiv.querySelector('.votes');
+                const percentSpan = candidateDiv.querySelector('.percent');
+                
+                bar.style.width = `${percent}%`;
+                votesSpan.textContent = `${count} vote${count === 1 ? '' : 's'}`;
+                percentSpan.textContent = `${Math.round(percent)}%`;
+            });
+        }
+
+        // Initialize on page load
+        initializeResults();
+
+        // Event listeners
+        revealBtn.addEventListener('click', revealNext);
+        resetBtn.addEventListener('click', initializeResults);
+
+        // Add CSS selector support for :has()
+        if (!CSS.supports('selector(:has(*))')) {
+            // Fallback for browsers that don't support :has
+            function findCandidateDiv(candidate) {
+                const divs = resultsDiv.querySelectorAll('.candidate');
+                for (const div of divs) {
+                    if (div.querySelector('h3').textContent === candidate) {
+                        return div;
+                    }
+                }
+                return null;
+            }
+            
+            const originalUpdateBars = updateBars;
+            updateBars = function() {
+                const totalVotes = Object.values(tallies).reduce((sum, count) => sum + count, 0);
+                
+                Object.entries(tallies).forEach(([candidate, count]) => {
+                    const candidateDiv = findCandidateDiv(candidate);
+                    if (!candidateDiv) return;
+                    
+                    const percent = totalVotes === 0 ? 0 : (count / totalVotes * 100);
+                    const bar = candidateDiv.querySelector('.bar-fill');
+                    const votesSpan = candidateDiv.querySelector('.votes');
+                    const percentSpan = candidateDiv.querySelector('.percent');
+                    
+                    bar.style.width = `${percent}%`;
+                    votesSpan.textContent = `${count} vote${count === 1 ? '' : 's'}`;
+                    percentSpan.textContent = `${Math.round(percent)}%`;
+                });
+            };
+        }
+    </script>
+</body>
+</html>

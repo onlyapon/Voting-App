@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RME 10 - Executive Member Voting</title>
+    <style>
+        /* Main styles */
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 1rem;
+        }
+
+        /* Candidate selection area */
+        .candidates {
+            text-align: left;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .candidate-option {
+            display: block;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .candidate-option:hover {
+            background: #e9ecef;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Messages */
+        .message {
+            margin-top: 1rem;
+            min-height: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .error { color: #dc3545; }
+        .success { color: #28a745; }
+
+        /* Counter display */
+        .selection-count {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>RMEDUSC — Batch RME 10</h1>
+        <p>Select exactly TWO candidates for Executive Member positions</p>
+
+        <form id="voteForm">
+            <div class="candidates">
+                <label class="candidate-option">
+                    <input type="checkbox" name="candidate" value="Candidate 1">
+                    Candidate 1
+                </label>
+                <label class="candidate-option">
+                    <input type="checkbox" name="candidate" value="Candidate 2">
+                    Candidate 2
+                </label>
+                <label class="candidate-option">
+                    <input type="checkbox" name="candidate" value="Candidate 3">
+                    Candidate 3
+                </label>
+                <label class="candidate-option">
+                    <input type="checkbox" name="candidate" value="Candidate 4">
+                    Candidate 4
+                </label>
+                <label class="candidate-option">
+                    <input type="checkbox" name="candidate" value="Candidate 5">
+                    Candidate 5
+                </label>
+            </div>
+
+            <div class="selection-count" id="selectionCount">
+                Selected: 0 of 2 required
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary" id="submitButton" disabled>
+                    Submit Vote
+                </button>
+                <a href="index.html" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const form = document.getElementById('voteForm');
+        const submitButton = document.getElementById('submitButton');
+        const message = document.getElementById('message');
+        const selectionCount = document.getElementById('selectionCount');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        
+        // Check if user is from RME 10
+        const batch = sessionStorage.getItem('voterBatch');
+        if (batch !== 'Batch_RME_10') {
+            message.textContent = 'Please select RME 10 batch from the home page.';
+            message.className = 'message error';
+            form.style.display = 'none';
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        }
+
+        // Handle checkbox changes
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const checked = document.querySelectorAll('input[type="checkbox"]:checked');
+                
+                // Update selection count
+                selectionCount.textContent = `Selected: ${checked.length} of 2 required`;
+                
+                // If more than 2 selected, uncheck the current one
+                if (checked.length > 2) {
+                    checkbox.checked = false;
+                    message.textContent = 'You can only select two candidates';
+                    message.className = 'message error';
+                    setTimeout(() => message.textContent = '', 2000);
+                    return;
+                }
+                
+                // Enable/disable submit button
+                submitButton.disabled = checked.length !== 2;
+                
+                // Clear any error messages
+                if (checked.length <= 2) {
+                    message.textContent = '';
+                }
+            });
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            if (selected.length !== 2) {
+                message.textContent = 'Please select exactly two candidates';
+                message.className = 'message error';
+                return;
+            }
+
+            // Save vote
+            const vote = {
+                batch: 'Batch_RME_10',
+                executives: selected,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                sessionStorage.setItem('vote_for_Batch_RME_10', JSON.stringify(vote));
+                message.textContent = 'Vote recorded successfully!';
+                message.className = 'message success';
+                submitButton.disabled = true;
+                
+                // Redirect to thank you page
+                setTimeout(() => {
+                    window.location.href = 'thankyou.html';
+                }, 1500);
+            } catch (error) {
+                message.textContent = 'Error saving your vote. Please try again.';
+                message.className = 'message error';
+            }
+        });
+    </script>
+</body>
+</html>

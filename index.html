@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Election - Select Your Batch</title>
+    <style>
+        /* --- Basic Styling for a Clean Look --- */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff; /* Department/Club Color */
+            margin-bottom: 5px;
+            font-size: 1.8em;
+        }
+
+        p {
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 1em;
+        }
+
+        .batch-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        /* Select styling */
+        select.batch-select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-color: #e9ecef;
+            color: #000;
+            border: none;
+            padding: 14px 16px;
+            font-size: 1.05em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.08s;
+        }
+
+        select.batch-select:focus {
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+            transform: translateY(-1px);
+        }
+
+        #nextButton {
+            margin-top: 30px;
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        #nextButton:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #nextButton:not(:disabled):hover {
+            background-color: #1e7e34;
+        }
+
+        /* Small helper for error text */
+        #error-message {
+            min-height: 1.2em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div style="text-align:center; margin-bottom:16px;">
+            <img src="clublogo.png" alt="Club Logo" style="max-width:140px; height:auto; display:inline-block;">
+        </div>
+        <h1>Welcome to the RMEDUSC Election 2025!</h1>
+        <p>Please select your batch to proceed to voting.</p>
+
+        <div class="batch-selection" id="batchSelection">
+            <label for="batchSelect" style="display:none;">Select your batch</label>
+            <select id="batchSelect" class="batch-select" aria-label="Select your batch">
+                <option value="" selected disabled>Choose your batch...</option>
+                <option value="Batch_RME_1">RME - 1</option>
+                <option value="Batch_RME_2">RME - 2</option>
+                <option value="Batch_RME_3">RME - 3</option>
+                <option value="Batch_RME_4">RME - 4</option>
+                <option value="Batch_RME_5">RME - 5</option>
+                <option value="Batch_RME_6">RME - 6</option>
+                <option value="Batch_RME_7">RME - 7</option>
+                <option value="Batch_RME_8">RME - 8</option>
+                <option value="Batch_RME_9">RME - 9</option>
+                <option value="Batch_RME_10">RME - 10</option>
+            </select>
+        </div>
+
+        <button id="nextButton" disabled>Continue</button>
+
+        <p id="error-message" style="color: red; margin-top: 15px; font-size: 0.9em;"></p>
+    </div>
+
+    <script>
+        const batchSelect = document.getElementById('batchSelect');
+        const nextButton = document.getElementById('nextButton');
+        const errorMessage = document.getElementById('error-message');
+
+        // Enable continue when a valid batch is chosen
+        batchSelect.addEventListener('change', () => {
+            if (batchSelect.value) {
+                nextButton.disabled = false;
+                errorMessage.textContent = '';
+            } else {
+                nextButton.disabled = true;
+            }
+        });
+
+        // Continue handler
+        nextButton.addEventListener('click', () => {
+            const selectedBatch = batchSelect.value;
+            if (!selectedBatch) {
+                errorMessage.textContent = 'Please select your batch to continue.';
+                return;
+            }
+
+                // Store selection
+                sessionStorage.setItem('voterBatch', selectedBatch);
+
+                // Route to different pages depending on batch
+                if (selectedBatch === 'Batch_RME_10') {
+                    window.location.href = 'rme10.html';
+                } else {
+                    // Batches RME_1..RME_9
+                    window.location.href = 'voting.html';
+                }
+        });
+    </script>
+
+</body>
+</html>

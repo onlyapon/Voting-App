@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting - RMEDUSC</title>
+    <script src="votes.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f4f7f6; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+        .card { background:#fff; padding:32px; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.08); max-width:520px; width:90%; text-align:center; }
+        h1 { color:#007bff; margin:0 0 8px; }
+        p { color:#444; }
+        .btn { display:inline-block; margin-top:18px; padding:10px 16px; border-radius:8px; border:none; cursor:pointer; background:#007bff; color:#fff; text-decoration:none; }
+        .stats { font-size:0.9em; color:#666; margin:8px 0; }
+        .warning { color:#dc3545; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Welcome to the Voting Page</h1>
+        <p id="welcome">Loading your batch...</p>
+
+        <!-- Ballot form: 10 posts -->
+        <form id="ballotForm" style="text-align:left; margin-top:18px; display:none;">
+            <!-- 1 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Cultural Secretary</legend>
+                <label><input type="radio" name="p1" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p1" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p1" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 2 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Assistant Cultural Secretary</legend>
+                <label><input type="radio" name="p2" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p2" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p2" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 3 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Printing and Publication Secretary</legend>
+                <label><input type="radio" name="p3" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p3" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p3" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 4 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Assistant Printing and Publication Secretary</legend>
+                <label><input type="radio" name="p4" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p4" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p4" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 5 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Social Welfare Secretary</legend>
+                <label><input type="radio" name="p5" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p5" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p5" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 6 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Assistant Social Welfare Secretary</legend>
+                <label><input type="radio" name="p6" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p6" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p6" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 7 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Sports Secretary</legend>
+                <label><input type="radio" name="p7" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p7" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p7" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 8 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Assistant Sports Secretary</legend>
+                <label><input type="radio" name="p8" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p8" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p8" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 9 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Research and Information Secretary</legend>
+                <label><input type="radio" name="p9" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p9" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p9" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <!-- 10 -->
+            <fieldset style="border:none; margin-bottom:16px; padding:0;">
+                <legend style="font-weight:600; margin-bottom:8px;">Assistant Research and Information Secretary</legend>
+                <label><input type="radio" name="p10" value="Candidate 1"> Candidate 1</label><br>
+                <label><input type="radio" name="p10" value="Candidate 2"> Candidate 2</label><br>
+                <label><input type="radio" name="p10" value="Candidate 3"> Candidate 3</label>
+            </fieldset>
+
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button id="submitVote" type="submit" class="btn" disabled>Submit Vote</button>
+                <a href="index.html" class="btn" style="background:#6c757d;">Back</a>
+            </div>
+
+            <p id="formMessage" style="color:green; margin-top:12px; min-height:1.2em;"></p>
+        </form>
+    </div>
+
+    <script>
+        const welcome = document.getElementById('welcome');
+        const ballotForm = document.getElementById('ballotForm');
+        const submitVote = document.getElementById('submitVote');
+        const formMessage = document.getElementById('formMessage');
+
+        const batch = sessionStorage.getItem('voterBatch');
+
+        function updateSubmitState() {
+            // Check all 10 posts
+            const completed = [1,2,3,4,5,6,7,8,9,10].every(i => {
+                return ballotForm.querySelector(`input[name="p${i}"]:checked`);
+            });
+            submitVote.disabled = !completed;
+        }
+
+        if (!batch) {
+            welcome.textContent = 'No batch selected. Please go back and choose your batch.';
+        } else {
+            const voteCount = voteManager.getVoteCount(batch);
+            const maxVotes = 30;
+            welcome.textContent = `You selected: ${batch}. This page is for RME batches 1–9.`;
+            formMessage.innerHTML = `Current votes for ${batch}: ${voteCount} of ${maxVotes} students have voted`;
+
+            // Only hide form if maximum votes reached
+            if (voteManager.isBatchFull(batch)) {
+                ballotForm.style.display = 'none';
+                formMessage.style.color = 'red';
+                formMessage.textContent = `Maximum number of votes (${maxVotes}) reached for ${batch}.`;
+            } else {
+                ballotForm.style.display = 'block';
+
+                // Listen to changes on radio inputs to enable submit
+                ballotForm.addEventListener('change', updateSubmitState);
+
+                // Submit handler for full ballot
+                ballotForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+
+                    // Build selections object
+                    const selections = {};
+                    for (let i = 1; i <= 10; i++) {
+                        const sel = ballotForm.querySelector(`input[name="p${i}"]:checked`);
+                        if (!sel) {
+                            formMessage.style.color = 'red';
+                            formMessage.textContent = 'Please make a selection for every post before submitting.';
+                            return;
+                        }
+                        selections[`post${i}`] = sel.value;
+                    }
+
+                    try {
+                        const recorded = voteManager.recordFullVote(batch, selections);
+                        formMessage.style.color = 'green';
+                        formMessage.textContent = `Thanks — your vote has been recorded (Voter #${recorded.voterNumber} for ${batch})`;
+
+                        // Reset form for next voter
+                        ballotForm.reset();
+                        submitVote.disabled = true;
+
+                        // Update vote count and hide if full
+                        const newCount = voteManager.getVoteCount(batch);
+                        if (newCount >= 30) {
+                            ballotForm.style.display = 'none';
+                            formMessage.textContent += '. Maximum votes reached for this batch.';
+                        }
+
+                        // Redirect to thank-you page
+                        setTimeout(() => {
+                            window.location.href = 'thankyou.html';
+                        }, 1500);
+                    } catch (err) {
+                        console.error('Error saving vote', err);
+                        formMessage.style.color = 'red';
+                        formMessage.textContent = 'Unable to save your vote locally. Please try again.';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

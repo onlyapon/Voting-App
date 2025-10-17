@@ -1,0 +1,13 @@
+{
+  "name": "rmedusc-voting",
+  "version": "1.0.0",
+  "description": "RMEDUSC Voting Application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "python -m http.server 8080"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You — RMEDUSC</title>
+    <style>
+        body { font-family: Arial, sans-serif; background:#f4f7f6; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0; }
+        .card { background:#fff; padding:32px; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,0.08); max-width:600px; width:90%; text-align:center; }
+        h1 { color:#28a745; margin:0 0 8px; }
+        p { color:#444; }
+        .btn { display:inline-block; margin-top:18px; padding:10px 16px; border-radius:8px; border:none; cursor:pointer; background:#007bff; color:#fff; text-decoration:none; }
+        pre { text-align:left; background:#f7f7f8; padding:12px; border-radius:6px; overflow:auto; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Thank you for voting!</h1>
+        <p id="summary">Loading your submission...</p>
+        <pre id="voteDump" style="display:none;"></pre>
+        <a href="index.html" class="btn">Return to Home</a>
+    </div>
+
+    <script>
+        const summary = document.getElementById('summary');
+        const voteDump = document.getElementById('voteDump');
+
+        // Try to find the most recent vote stored in sessionStorage
+        function findLatestVote() {
+            // Prefer vote_for_Batch_RME_10 if present
+            const keys = Object.keys(sessionStorage).filter(k => k.startsWith('vote_for_'));
+            if (keys.length === 0) return null;
+            // If multiple, pick the last modified by timestamp inside stored value
+            const votes = keys.map(k => {
+                try { return { key:k, val: JSON.parse(sessionStorage.getItem(k)) } } catch(e){ return null; }
+            }).filter(Boolean);
+            if (votes.length === 0) return null;
+            votes.sort((a,b) => (new Date(b.val.timestamp || 0)) - (new Date(a.val.timestamp || 0)));
+            return votes[0].val;
+        }
+
+        const latest = findLatestVote();
+        if (!latest) {
+            summary.textContent = 'We could not find a recorded vote in this session.';
+        } else {
+            summary.textContent = `Recorded vote for ${latest.batch}. Thank you — your choices:`;
+            voteDump.style.display = 'block';
+            voteDump.textContent = JSON.stringify(latest, null, 2);
+        }
+    </script>
+</body>
+</html>

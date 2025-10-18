@@ -219,13 +219,29 @@
                 timestamp: new Date().toISOString()
             };
 
-            try {
-                // Generate a unique key for this vote using timestamp
-                const voteKey = 'vote_for_Batch_RME_10_' + new Date().getTime();
-                sessionStorage.setItem(voteKey, JSON.stringify(vote));
+            // Send vote to backend API
+            fetch('http://localhost:5001/api/votes/rme10', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(vote)
+            })
+            .then(response => response.json())
+            .then(data => {
                 message.textContent = 'Vote recorded successfully!';
                 message.className = 'message success';
                 submitButton.disabled = true;
+                
+                // Redirect to thank you page
+                setTimeout(() => {
+                    window.location.href = 'thankyou.html';
+                }, 1500);
+            })
+            .catch(error => {
+                message.textContent = 'Error saving your vote. Please try again.';
+                message.className = 'message error';
+            });
                 
                 // Redirect to thank you page
                 setTimeout(() => {

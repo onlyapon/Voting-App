@@ -110,24 +110,19 @@
         let votes = [];
         let tallies = {};
 
-        function loadVotes() {
-            const allVotes = {};
-            for (let i = 0; i < sessionStorage.length; i++) {
-                const key = sessionStorage.key(i);
-                if (key.startsWith('vote_for_Batch_RME_10')) {
-                    try {
-                        const vote = JSON.parse(sessionStorage.getItem(key));
-                        allVotes[key] = vote;
-                    } catch (e) {
-                        console.error('Error parsing vote:', e);
-                    }
-                }
+        async function loadVotes() {
+            try {
+                const response = await fetch('http://localhost:5001/api/votes/rme10');
+                const votes = await response.json();
+                return votes.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+            } catch (error) {
+                console.error('Error loading votes:', error);
+                return [];
             }
-            return Object.values(allVotes).sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
         }
 
-        function initializeResults() {
-            votes = loadVotes();
+        async function initializeResults() {
+            votes = await loadVotes();
             revealIndex = 0;
             tallies = {};
             
@@ -222,7 +217,10 @@
         }
 
         // Initialize on page load
-        initializeResults();
+        initializeResults().catch(error => {
+            console.error('Error initializing results:', error);
+            resultsDiv.innerHTML = '<div class="error">Error loading votes. Please try again later.</div>';
+        });
 
         // Event listeners
         revealBtn.addEventListener('click', revealNext);
